@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'cn.javen.tool'
+version = '0.0.1-SNAPSHOT'
+description = 'reverse-geo'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // <!-- JTS Topology Suite -->
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+    // GeoTools for WKT parsing (optional, but helps)
+    //implementation 'org.geotools:gt-main:28.0'
+    //implementation 'org.geotools:gt-geometry:28.0'
+    // CSV parsing
+    implementation 'com.opencsv:opencsv:5.7.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'cn.javen.tool.reversegeo.ReverseGeoApplication'
+}
