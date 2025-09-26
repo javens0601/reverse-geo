@@ -101,21 +101,21 @@ public class ReverseGeocodeController {
 
     @GetMapping("/csv-reverse")
     public ResponseEntity<?> csvReverse(@RequestParam String name) throws IOException {
-        String filename = "src/main/resources/" + name;
+        String filename = name;
 
         List<String[]> sourceLines = CsvUtil.read(filename);
         List<String[]> newLines = sourceLines.stream().map(line -> {
             double lng = 0;
             try {
-                lng = Double.parseDouble(line[1]);
-                double lat = Double.parseDouble(line[2]);
+                lng = Double.parseDouble(line[2]);
+                double lat = Double.parseDouble(line[3]);
                 var street = geoDataLoader.reverseGeocode(lng, lat);
                 if (Objects.nonNull(street)) {
                     Map<String, String> addr = geoDataLoader.getAddress(street.getStreetId());
                     addr.put("street", street.getName());
                     addr.put("streetid", street.getStreetId());
 
-                    List<String> newLine = List.of(line[0], line[1], line[2],
+                    List<String> newLine = List.of(line[0], line[1], line[2], line[3],
                             addr.getOrDefault("province", ""),
                             addr.getOrDefault("city", ""),
                             addr.getOrDefault("district", ""),
@@ -126,7 +126,7 @@ public class ReverseGeocodeController {
             }
             catch (NumberFormatException e) {
                 // 表头行
-                return List.of(line[0], line[1], line[2], "省", "市", "区", "街道").stream().toArray(String[]::new);
+                return List.of(line[0], line[1], line[2], line[3], "省", "市", "区", "街道").stream().toArray(String[]::new);
             }
         }).collect(Collectors.toUnmodifiableList());
 
